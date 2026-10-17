@@ -12,7 +12,7 @@ Este proyecto analiza factores socioeconómicos y académicos que inciden en el 
 * Sofía
 
 ## Preguntas de Investigación
-1. ¿Cuál es la relación entre las horas trabajadas a la semana y el promedio académico (GPA) del estudiante?
+1. ¿Cuál es la relación entre las horas trabajadas a la semana y el promedio académico del estudiante?
 2. ¿Cómo influye el estrés financiero en la deserción universitaria durante los primeros semestres?
 3. ¿Existe una diferencia en el rendimiento académico entre estudiantes de primera generación universitaria y los demás?
 
