@@ -122,55 +122,9 @@ def calcular_estadisticas(ruta_archivo, indice_columna):
     # Tarea del Integrante 3
     
 
-def funcionalidad_opcional(ruta_archivo):
-    # Tarea del Integrante 4
-    pass
-
-# --- EL MENÚ INTERACTIVO ---
-
-def mostrar_menu():
-    print("="*50)
-    print("  DATALAB: RETENCIÓN Y RENDIMIENTO ESTUDIANTIL")
-    print("="*50)
-    print("1. Buscar un término específico")
-    print("2. Ver estadísticas básicas (Máx, Mín, Promedio)")
-    print("3. Funcionalidad opcional (Filtro/Agrupación)")
-    print("4. Salir")
-    opcion = input("Elige una opción (1-4): ")
-    return opcion
-
-def main():
-    archivo_actual = "estudiantes_50.csv"
-    print(f"Iniciando sistema con el archivo: {archivo_actual}...")
-    
-    while True:
-        opcion = mostrar_menu()
-        
-        if opcion == '1':
-            termino = input("Ingresa el término a buscar: ")
-            cargar_y_buscar(archivo_actual, termino)
-        elif opcion == '2':
-            encabezados = obtener_encabezados(archivo_actual)
-            indice = pedir_columna(encabezados)
-            if indice != -1:
-                calcular_estadisticas(archivo_actual, indice)
-        elif opcion == '3':
-            print("Ejecutando funcionalidad opcional...")
-            funcionalidad_opcional(archivo_actual)
-        elif opcion == '4':
-            print("Saliendo del explorador. ¡Hasta pronto!")
-            break
-        else:
-            print("Opción no válida. Ingresa un número del 1 al 4.")
-
-if __name__ == "__main__":
-    main()
-
-#parte 4
-# ==========================================================
-# FUNCIONALIDAD OPCIONAL: AGRUPAR POR CATEGORIA
-#===========================================================
-
+# =============================================
+# FUNCIONALIDAD OPCIONAL: AGRUPAR POR CATEGORIA 
+# =============================================
 
 def leer_archivo(ruta_archivo):
     """Lee el CSV y devuelve el encabezado y las filas."""
@@ -227,20 +181,9 @@ def funcionalidad_agrupar(ruta_archivo):
     if len(filas) == 0:
         return
 
-    # Mostrar las columnas con su número
-    print("\nColumnas disponibles:")
-    for i in range(len(encabezado)):
-        print(i, "-", encabezado[i])
-
-    # Pedir la columna y validar
-    try:
-        indice = int(input("\nNúmero de la columna a agrupar: "))
-    except ValueError:
-        print("Debes escribir un número.")
-        return
-
-    if indice < 0 or indice >= len(encabezado):
-        print("Esa columna no existe.")
+    # Reutiliza pedir_columna (la misma que usa la opción 2): pide el NOMBRE de la columna
+    indice = pedir_columna(encabezado)
+    if indice == -1:
         return
 
     # Contar, ordenar e imprimir
@@ -258,3 +201,45 @@ def funcionalidad_agrupar(ruta_archivo):
 
 def funcionalidad_opcional(ruta_archivo):
     funcionalidad_agrupar(ruta_archivo)
+
+
+# --- EL MENÚ INTERACTIVO ---
+
+def mostrar_menu():
+    print("="*50)
+    print("  DATALAB: RETENCIÓN Y RENDIMIENTO ESTUDIANTIL")
+    print("="*50)
+    print("1. Buscar un término específico")
+    print("2. Ver estadísticas básicas (Máx, Mín, Promedio)")
+    print("3. Agrupar por Categoría")
+    print("4. Salir")
+    opcion = input("Elige una opción (1-4): ")
+    return opcion
+
+def main():
+    archivo_actual = "estudiantes_50.csv"
+    print(f"Iniciando sistema con el archivo: {archivo_actual}...")
+    
+    while True:
+        opcion = mostrar_menu()
+        
+        if opcion == '1':
+            termino = input("Ingresa el término a buscar: ")
+            cargar_y_buscar(archivo_actual, termino)
+        elif opcion == '2':
+            encabezados = obtener_encabezados(archivo_actual)
+            indice = pedir_columna(encabezados)
+            if indice != -1:
+                calcular_estadisticas(archivo_actual, indice)
+        elif opcion == '3':
+            print("Ejecutando funcionalidad opcional...")
+            funcionalidad_opcional(archivo_actual)
+        elif opcion == '4':
+            print("Saliendo del explorador. ¡Hasta pronto!")
+            break
+        else:
+            print("Opción no válida. Ingresa un número del 1 al 4.")
+
+if __name__ == "__main__":
+    main()
+
