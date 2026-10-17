@@ -1,15 +1,14 @@
-# DataLab: Retención y Rendimiento Estudiantil
+# Perseus Data:Plataforma de Predicción de Deserción Universitaria
 
 ## Descripción del Proyecto
 Este proyecto analiza factores socioeconómicos y académicos que inciden en el rendimiento escolar y la tasa de retención estudiantil universitaria. A través de una herramienta interactiva en Python, exploramos patrones clave para responder a problemáticas de deserción.
 
 ## Integrantes
-* Danna
-* Diego
-* Sharon
-* Julián
-* Sara
-* Sofía
+* Danna Villamizar
+* Diego Sabogal
+* Julián Hernandez
+* Sara Fontecha
+* Sofía Cabra
 
 ## Preguntas de Investigación
 1. ¿Cuál es la relación entre las horas trabajadas a la semana y el promedio académico del estudiante?
