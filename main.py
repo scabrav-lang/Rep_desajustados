@@ -165,3 +165,96 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+#parte 4
+# ==========================================================
+# FUNCIONALIDAD OPCIONAL: AGRUPAR POR CATEGORIA
+#===========================================================
+
+
+def leer_archivo(ruta_archivo):
+    """Lee el CSV y devuelve el encabezado y las filas."""
+    try:
+        archivo = open(ruta_archivo, "r", encoding="utf-8")
+    except FileNotFoundError:
+        print("No se encontró el archivo:", ruta_archivo)
+        return [], []
+
+    lineas = archivo.readlines()   # lista con todas las líneas del archivo
+    archivo.close()
+
+    # La primera línea son los nombres de las columnas
+    encabezado = lineas[0].strip().split(",")
+
+    # El resto de las líneas son los registros
+    filas = []
+    for linea in lineas[1:]:
+        linea = linea.strip()
+        if linea != "":
+            filas.append(linea.split(","))
+
+    return encabezado, filas
+
+
+def contar_categorias(filas, indice):
+    """Devuelve un diccionario con la cantidad de registros por categoría.
+    Ejemplo: {"Enrolled": 42, "Dropped_Out": 8}"""
+    conteo = {}
+    for fila in filas:
+        valor = fila[indice].strip()
+        if valor == "":
+            valor = "(vacío)"
+
+        if valor in conteo:
+            conteo[valor] = conteo[valor] + 1
+        else:
+            conteo[valor] = 1
+    return conteo
+
+
+def ordenar_de_mayor_a_menor(conteo):
+    """Convierte el diccionario en una lista ordenada de (cantidad, categoría)."""
+    lista = []
+    for categoria in conteo:
+        lista.append((conteo[categoria], categoria))
+    lista.sort(reverse=True)   # de mayor a menor cantidad
+    return lista
+
+
+def funcionalidad_agrupar(ruta_archivo):
+    """Pide una columna al usuario y muestra cuántos registros hay por categoría."""
+    encabezado, filas = leer_archivo(ruta_archivo)
+    if len(filas) == 0:
+        return
+
+    # Mostrar las columnas con su número
+    print("\nColumnas disponibles:")
+    for i in range(len(encabezado)):
+        print(i, "-", encabezado[i])
+
+    # Pedir la columna y validar
+    try:
+        indice = int(input("\nNúmero de la columna a agrupar: "))
+    except ValueError:
+        print("Debes escribir un número.")
+        return
+
+    if indice < 0 or indice >= len(encabezado):
+        print("Esa columna no existe.")
+        return
+
+    # Contar, ordenar e imprimir
+    conteo = contar_categorias(filas, indice)
+    lista = ordenar_de_mayor_a_menor(conteo)
+    total = len(filas)
+
+    print("\nRegistros por", encabezado[indice], "(de mayor a menor):")
+    for cantidad, categoria in lista:
+        porcentaje = cantidad * 100 / total
+        print(f"  {categoria}: {cantidad} ({porcentaje:.1f}%)")
+
+    print("\nCategorías distintas:", len(lista))
+
+
+def funcionalidad_opcional(ruta_archivo):
+    funcionalidad_agrupar(ruta_archivo)
