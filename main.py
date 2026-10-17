@@ -3,8 +3,43 @@
 # ==========================================
 
 def cargar_y_buscar(ruta_archivo, termino_busqueda):
-    # Tarea del Integrante 2
-    pass 
+    coincidencias = 0
+    termino_busqueda = termino_busqueda.lower().strip()
+    
+    try:
+        with open(ruta_archivo, mode='r', encoding='utf-8') as archivo:
+            # Leer la primera línea (cabecera) para tener los nombres de las columnas
+            cabecera = archivo.readline().strip().split(',')
+            
+            print("\n--- Resultados de la Búsqueda ---")
+            for linea in archivo:
+                linea = linea.strip()
+                if not linea:
+                    continue
+                
+                valores = linea.split(',')
+    
+                coincidencia_en_linea = False
+                for valor in valores:
+                    if termino_busqueda in valor.lower():
+                        coincidencia_en_linea = True
+                        break
+                
+                if coincidencia_en_linea:
+                    coincidencias += 1
+                    detalles = []
+                    for i in range(len(cabecera)):
+                        val = valores[i] if i < len(valores) else ""
+                        detalles.append(f"{cabecera[i]}: {val}")
+                    print(f"[{coincidencias}] " + " | ".join(detalles))
+            
+            print("-"*50)
+            print(f"Total de coincidencias encontradas: {coincidencias}")
+            print("-"*50)
+            
+    except FileNotFoundError:
+        print(f"Error: El archivo '{ruta_archivo}' no existe. Asegúrate de que el Integrante 1 lo haya creado.")
+
 
 def calcular_estadisticas(ruta_archivo, indice_columna):
     # Tarea del Integrante 3
