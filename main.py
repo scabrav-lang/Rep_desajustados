@@ -207,7 +207,7 @@ def funcionalidad_opcional(ruta_archivo):
 
 def mostrar_menu():
     print("="*50)
-    print("  DATALAB: RETENCIÓN Y RENDIMIENTO ESTUDIANTIL")
+    print("  PERSEUS DATA: PLATAFORMA DE PREDICCIÓN DE DESERCIÓN")
     print("="*50)
     print("1. Buscar un término específico")
     print("2. Ver estadísticas básicas (Máx, Mín, Promedio)")
