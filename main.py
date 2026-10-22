@@ -21,7 +21,7 @@ def cargar_y_buscar(ruta_archivo, termino_busqueda):
     
                 coincidencia_en_linea = False
                 for valor in valores:
-                    if termino_busqueda in valor.lower():
+                    if termino_busqueda == valor.lower().strip():
                         coincidencia_en_linea = True
                         break
                 
@@ -224,6 +224,7 @@ def main():
         opcion = mostrar_menu()
         
         if opcion == '1':
+            print("\nTip: Intenta buscar términos como 'Enrolled','Dropped_Out','Female','Male','Off-Campus','On-Campus','With Parents' o números de edad de '17' a '24'.")
             termino = input("Ingresa el término a buscar: ")
             cargar_y_buscar(archivo_actual, termino)
         elif opcion == '2':
