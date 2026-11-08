@@ -1,4 +1,4 @@
-
+from datetime import datetime
 import csv
 import json
 import os
@@ -103,3 +103,34 @@ def ruta_resultado(nombre_archivo):
 def formatear_json(datos):
     """Devuelve el contenido en texto con sangría, listo para imprimir."""
     return json.dumps(datos, indent=4, ensure_ascii=False)
+
+def registrar_historial(termino_buscado, cantidad_resultados):
+    """Guarda silenciosamente una línea en historial.csv con la fecha, hora, término y resultados."""
+    fecha_hora = datetime.now().strftime("%Y-%m-%d %H:%M")
+    
+    archivo = open("historial.csv", "a", encoding="utf-8", newline="")
+    escritor = csv.writer(archivo)
+    
+    escritor.writerow([fecha_hora, termino_buscado, f"{cantidad_resultados} resultados"])
+    archivo.close()
+
+def mostrar_historial():
+    """Lee e imprime en pantalla el contenido del archivo historial.csv."""
+    try:
+        archivo = open("historial.csv", "r", encoding="utf-8")
+        lector = csv.reader(archivo)
+        todas = list(lector)
+        archivo.close()
+
+        if len(todas) == 0:
+            print("\nEl historial está vacío.\n")
+            return
+
+        print("\n=== HISTORIAL DE CONSULTAS ===")
+        for fila in todas:
+            if fila:  # Evita imprimir líneas vacías si las hay
+                print(f"[{fila[0]}] Término: '{fila[1]}' -> {fila[2]}")
+        print("===============================\n")
+
+    except FileNotFoundError:
+        print("\nAún no hay historial registrado (el archivo historial.csv no existe).\n")
