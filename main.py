@@ -242,7 +242,7 @@ def main():
             encabezados = obtener_encabezados(archivo_actual)
             indice = pedir_columna(encabezados)
             if indice != -1:
-                calcular_estadisticas(archivo_actual, indice)
+                resultado = calcular_estadisticas(archivo_actual, indice)
                 if resultado is not None:
                     Guardar_buscar.ofrecer_guardar(
                         ["Columna", "Maximo", "Minimo", "Promedio"],
