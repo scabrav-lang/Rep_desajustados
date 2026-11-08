@@ -1,9 +1,11 @@
 # ==========================================
 # PROYECTO DATALAB - ENTREGA 1 
 # ==========================================
-
+import Guardar_buscar
 def cargar_y_buscar(ruta_archivo, termino_busqueda):
     coincidencias = 0
+    encontradas = []
+    cabecera = []
     termino_busqueda = termino_busqueda.lower().strip()
     
     try:
@@ -27,6 +29,7 @@ def cargar_y_buscar(ruta_archivo, termino_busqueda):
                 
                 if coincidencia_en_linea:
                     coincidencias += 1
+                    econtradas.append(valores)
                     detalles = []
                     for i in range(len(cabecera)):
                         val = valores[i] if i < len(valores) else ""
@@ -39,6 +42,7 @@ def cargar_y_buscar(ruta_archivo, termino_busqueda):
             
     except FileNotFoundError:
         print(f"Error: El archivo '{ruta_archivo}' no existe. Asegúrate de que el Integrante 1 lo haya creado.")
+    return cabecera, econtradas
 
 
 def obtener_encabezados(ruta_archivo):
@@ -197,6 +201,10 @@ def funcionalidad_agrupar(ruta_archivo):
         print(f"  {categoria}: {cantidad} ({porcentaje:.1f}%)")
 
     print("\nCategorías distintas:", len(lista))
+    filas_resumen = []
+    for cantidad, categoria in lista:
+        filas_resumen.append([categoria, cantidad])
+    Guardar_buscar.ofrecer_guardar([encabezado[indice], "cantidad"], filas_resumen)
 
 
 def funcionalidad_opcional(ruta_archivo):
@@ -212,8 +220,9 @@ def mostrar_menu():
     print("1. Buscar un término específico")
     print("2. Ver estadísticas básicas (Máx, Mín, Promedio)")
     print("3. Agrupar por Categoría")
-    print("4. Salir")
-    opcion = input("Elige una opción (1-4): ")
+    print("4. Recuperar resultados guardados")
+    print("5. Salir)
+    opcion = input("Elige una opción (1-5): ")
     return opcion
 
 def main():
@@ -227,15 +236,23 @@ def main():
             print("\nTip: Intenta buscar términos como 'Enrolled','Dropped_Out','Female','Male','Off-Campus','On-Campus','With Parents' o números de edad de '17' a '24'.")
             termino = input("Ingresa el término a buscar: ")
             cargar_y_buscar(archivo_actual, termino)
+            cabecera, encontradas = cargar_y_buscar(archivo_actual, termino)
+            Guardar_buscar.ofrecer_guardar(cabecera, econtradas)
         elif opcion == '2':
             encabezados = obtener_encabezados(archivo_actual)
             indice = pedir_columna(encabezados)
             if indice != -1:
                 calcular_estadisticas(archivo_actual, indice)
+                if resultado is not None:
+                    Guardar_buscar.ofrecer_guardar(
+                        ["Columna", "Maximo", "Minimo", "Promedio"],
+                        [[encabezados[indice], resultado[0], resultado[1], resultado[2]]])
         elif opcion == '3':
             print("Ejecutando funcionalidad opcional...")
             funcionalidad_opcional(archivo_actual)
         elif opcion == '4':
+            Guardar_buscar.menu_recuperar()
+        elif opcion == '5':
             print("Saliendo del explorador. ¡Hasta pronto!")
             break
         else:
