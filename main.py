@@ -221,7 +221,7 @@ def mostrar_menu():
     print("2. Ver estadísticas básicas (Máx, Mín, Promedio)")
     print("3. Agrupar por Categoría")
     print("4. Recuperar resultados guardados")
-    print("5. Salir)
+    print("5. Salir")
     opcion = input("Elige una opción (1-5): ")
     return opcion
 
