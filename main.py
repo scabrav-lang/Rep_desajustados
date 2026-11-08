@@ -43,7 +43,7 @@ def cargar_y_buscar(ruta_archivo, termino_busqueda):
             
     except FileNotFoundError:
         print(f"Error: El archivo '{ruta_archivo}' no existe. Asegúrate de que el Integrante 1 lo haya creado.")
-    return cabecera, econtradas
+    return cabecera, encontradas
 
 
 def obtener_encabezados(ruta_archivo):
