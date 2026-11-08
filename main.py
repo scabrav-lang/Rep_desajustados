@@ -2,6 +2,7 @@
 # PROYECTO DATALAB - ENTREGA 1 
 # ==========================================
 import Guardar_buscar
+from archivos import registrar_historial, mostrar_historial
 def cargar_y_buscar(ruta_archivo, termino_busqueda):
     coincidencias = 0
     encontradas = []
@@ -123,7 +124,7 @@ def calcular_estadisticas(ruta_archivo, indice_columna):
         promedio = suma / cantidad
         print(f"Máximo: {maximo} · Mínimo: {minimo} · Promedio: {promedio:.2f}")
         return maximo, minimo, promedio
-    # Tarea del Integrante 3
+
     
 
 # =============================================
@@ -221,8 +222,9 @@ def mostrar_menu():
     print("2. Ver estadísticas básicas (Máx, Mín, Promedio)")
     print("3. Agrupar por Categoría")
     print("4. Recuperar resultados guardados")
-    print("5. Salir")
-    opcion = input("Elige una opción (1-5): ")
+    print("5. Ver Historial de Consultas")
+    print("6. Salir")
+    opcion = input("Elige una opción (1-6): ")
     return opcion
 
 def main():
@@ -233,11 +235,13 @@ def main():
         opcion = mostrar_menu()
         
         if opcion == '1':
-            print("\nTip: Intenta buscar términos como 'Enrolled','Dropped_Out','Female','Male','Off-Campus','On-Campus','With Parents' o números de edad de '17' a '24'.")
+            print("\nTip: Intenta buscar términos como 'Enrolled'...")
             termino = input("Ingresa el término a buscar: ")
-            cargar_y_buscar(archivo_actual, termino)
             cabecera, encontradas = cargar_y_buscar(archivo_actual, termino)
-            Guardar_buscar.ofrecer_guardar(cabecera, econtradas)
+            Guardar_buscar.ofrecer_guardar(cabecera, encontradas)
+            
+            # ---> TU MISIÓN: Registro silencioso de la búsqueda <---
+            registrar_historial(termino, len(encontradas))
         elif opcion == '2':
             encabezados = obtener_encabezados(archivo_actual)
             indice = pedir_columna(encabezados)
