@@ -30,7 +30,7 @@ def cargar_y_buscar(ruta_archivo, termino_busqueda):
                 
                 if coincidencia_en_linea:
                     coincidencias += 1
-                    econtradas.append(valores)
+                    encontradas.append(valores)
                     detalles = []
                     for i in range(len(cabecera)):
                         val = valores[i] if i < len(valores) else ""
