@@ -240,7 +240,7 @@ def main():
             cabecera, encontradas = cargar_y_buscar(archivo_actual, termino)
             Guardar_buscar.ofrecer_guardar(cabecera, encontradas)
             
-            # ---> TU MISIÓN: Registro silencioso de la búsqueda <---
+            # Registro silencioso de la búsqueda
             registrar_historial(termino, len(encontradas))
         elif opcion == '2':
             encabezados = obtener_encabezados(archivo_actual)
@@ -257,11 +257,10 @@ def main():
         elif opcion == '4':
             Guardar_buscar.menu_recuperar()
         elif opcion == '5':
+            mostrar_historial()
+        elif opcion == '6':
             print("Saliendo del explorador. ¡Hasta pronto!")
             break
         else:
-            print("Opción no válida. Ingresa un número del 1 al 4.")
-
-if __name__ == "__main__":
-    main()
+            print("Opción no válida. Ingresa un número del 1 al 6.")
 
