@@ -2,9 +2,42 @@
 # PROYECTO DATALAB - ENTREGA 2
 # ==========================================
 import Guardar_buscar
+import archivos
 from Guardar_buscar import cargar_dataset
 from archivos import registrar_historial, mostrar_historial
-from resumen import generar_resumen
+
+# Corrección sin editar Guardar_buscar.py: ese módulo usa ARCHIVO_INDICE pero
+# no la define. Si ya la tienes definida allá, esta línea no cambia nada.
+if not hasattr(Guardar_buscar, "ARCHIVO_INDICE"):
+    Guardar_buscar.ARCHIVO_INDICE = "indice_resultados.txt"
+
+
+def generar_resumen(ruta_csv):
+    """Crea resultados/resumen.json con total, únicos por campo de texto
+    y máximo/mínimo de campos numéricos. Devuelve el diccionario (o None)."""
+    encabezado, filas = cargar_dataset(ruta_csv)
+    if not encabezado:
+        return None
+
+    resumen = {"total": len(filas)}                        # diccionario
+
+    for i in range(len(encabezado)):
+        valores = []                                       # lista
+        for fila in filas:
+            if i < len(fila) and fila[i].strip() != "":
+                valores.append(fila[i].strip())
+        if not valores:
+            continue
+
+        try:
+            numeros = [float(v) for v in valores]
+            resumen[encabezado[i] + "_max"] = max(numeros)
+            resumen[encabezado[i] + "_min"] = min(numeros)
+        except ValueError:
+            resumen[encabezado[i]] = len(set(valores))     # conjunto: valores únicos
+
+    archivos.guardar_json("resumen", resumen)  # la de archivos.py: (nombre, datos)
+    return resumen
 
 
 def cargar_y_buscar(ruta_archivo, termino_busqueda):
