@@ -1,57 +1,48 @@
 # ==========================================
-# PROYECTO DATALAB - ENTREGA 1 
+# PROYECTO DATALAB - ENTREGA 2
 # ==========================================
 import Guardar_buscar
+from Guardar_buscar import cargar_dataset
 from archivos import registrar_historial, mostrar_historial
+from resumen import generar_resumen
+
+
 def cargar_y_buscar(ruta_archivo, termino_busqueda):
     coincidencias = 0
     encontradas = []
-    cabecera = []
     termino_busqueda = termino_busqueda.lower().strip()
-    
-    try:
-        with open(ruta_archivo, mode='r', encoding='utf-8') as archivo:
-            # Leer la primera línea (cabecera) para tener los nombres de las columnas
-            cabecera = archivo.readline().strip().split(',')
-            
-            print("\n--- Resultados de la Búsqueda ---")
-            for linea in archivo:
-                linea = linea.strip()
-                if not linea:
-                    continue
-                
-                valores = linea.split(',')
-    
-                coincidencia_en_linea = False
-                for valor in valores:
-                    if termino_busqueda == valor.lower().strip():
-                        coincidencia_en_linea = True
-                        break
-                
-                if coincidencia_en_linea:
-                    coincidencias += 1
-                    encontradas.append(valores)
-                    detalles = []
-                    for i in range(len(cabecera)):
-                        val = valores[i] if i < len(valores) else ""
-                        detalles.append(f"{cabecera[i]}: {val}")
-                    print(f"[{coincidencias}] " + " | ".join(detalles))
-            
-            print("-"*50)
-            print(f"Total de coincidencias encontradas: {coincidencias}")
-            print("-"*50)
-            
-    except FileNotFoundError:
-        print(f"Error: El archivo '{ruta_archivo}' no existe. Asegúrate de que el Integrante 1 lo haya creado.")
+
+    # Cambio: ahora se carga con csv.reader (vía cargar_dataset)
+    cabecera, filas = cargar_dataset(ruta_archivo)
+    if not cabecera:
+        return cabecera, encontradas
+
+    print("\n--- Resultados de la Búsqueda ---")
+    for valores in filas:
+        coincidencia_en_linea = False
+        for valor in valores:
+            if termino_busqueda == valor.lower().strip():
+                coincidencia_en_linea = True
+                break
+
+        if coincidencia_en_linea:
+            coincidencias += 1
+            encontradas.append(valores)
+            detalles = []
+            for i in range(len(cabecera)):
+                val = valores[i] if i < len(valores) else ""
+                detalles.append(f"{cabecera[i]}: {val}")
+            print(f"[{coincidencias}] " + " | ".join(detalles))
+
+    print("-" * 50)
+    print(f"Total de coincidencias encontradas: {coincidencias}")
+    print("-" * 50)
     return cabecera, encontradas
 
 
 def obtener_encabezados(ruta_archivo):
     """Devuelve una lista con los nombres de las columnas del CSV."""
-    archivo = open(ruta_archivo, "r")
-    primera_linea = archivo.readline()
-    archivo.close()
-    return primera_linea.strip().split(",")
+    return cargar_dataset(ruta_archivo)[0]
 
 
 def es_numero(texto):
@@ -92,16 +83,15 @@ def pedir_columna(encabezados):
 
 def calcular_estadisticas(ruta_archivo, indice_columna):
     """Calcula e imprime máximo, mínimo y promedio de una columna numérica."""
-    maximo = None      # variable acumuladora: el mayor valor visto
-    minimo = None      # variable acumuladora: el menor valor visto
-    suma = 0           # variable acumu ladora: suma de todos los valores
-    cantidad = 0       # variable acumuladora: cuántos valores hay
+    maximo = None
+    minimo = None
+    suma = 0
+    cantidad = 0
 
-    archivo = open(ruta_archivo, "r")
-    archivo.readline()  # saltar el encabezado
+    # Cambio: se usa cargar_dataset en vez de abrir el archivo a mano
+    encabezado, filas = cargar_dataset(ruta_archivo)
 
-    for linea in archivo:  # bucle: recorre el archivo fila por fila
-        partes = linea.strip().split(",")
+    for partes in filas:
         if indice_columna >= len(partes):
             continue
         texto = partes[indice_columna]
@@ -116,43 +106,22 @@ def calcular_estadisticas(ruta_archivo, indice_columna):
         suma = suma + valor
         cantidad = cantidad + 1
 
-    archivo.close()
-
     if cantidad == 0:
         print("Esa columna no tiene valores numéricos.")
-    else:
-        promedio = suma / cantidad
-        print(f"Máximo: {maximo} · Mínimo: {minimo} · Promedio: {promedio:.2f}")
-        return maximo, minimo, promedio
+        return None
 
-    
+    promedio = suma / cantidad
+    print(f"Máximo: {maximo} · Mínimo: {minimo} · Promedio: {promedio:.2f}")
+    return maximo, minimo, promedio
+
 
 # =============================================
-# FUNCIONALIDAD OPCIONAL: AGRUPAR POR CATEGORIA 
+# FUNCIONALIDAD OPCIONAL: AGRUPAR POR CATEGORIA
 # =============================================
 
 def leer_archivo(ruta_archivo):
-    """Lee el CSV y devuelve el encabezado y las filas."""
-    try:
-        archivo = open(ruta_archivo, "r", encoding="utf-8")
-    except FileNotFoundError:
-        print("No se encontró el archivo:", ruta_archivo)
-        return [], []
-
-    lineas = archivo.readlines()   # lista con todas las líneas del archivo
-    archivo.close()
-
-    # La primera línea son los nombres de las columnas
-    encabezado = lineas[0].strip().split(",")
-
-    # El resto de las líneas son los registros
-    filas = []
-    for linea in lineas[1:]:
-        linea = linea.strip()
-        if linea != "":
-            filas.append(linea.split(","))
-
-    return encabezado, filas
+    """Devuelve el encabezado y las filas del CSV."""
+    return cargar_dataset(ruta_archivo)
 
 
 def contar_categorias(filas, indice):
@@ -160,7 +129,7 @@ def contar_categorias(filas, indice):
     Ejemplo: {"Enrolled": 42, "Dropped_Out": 8}"""
     conteo = {}
     for fila in filas:
-        valor = fila[indice].strip()
+        valor = fila[indice].strip() if indice < len(fila) else ""
         if valor == "":
             valor = "(vacío)"
 
@@ -176,7 +145,7 @@ def ordenar_de_mayor_a_menor(conteo):
     lista = []
     for categoria in conteo:
         lista.append((conteo[categoria], categoria))
-    lista.sort(reverse=True)   # de mayor a menor cantidad
+    lista.sort(reverse=True)
     return lista
 
 
@@ -186,15 +155,16 @@ def funcionalidad_agrupar(ruta_archivo):
     if len(filas) == 0:
         return
 
-    # Reutiliza pedir_columna (la misma que usa la opción 2): pide el NOMBRE de la columna
     indice = pedir_columna(encabezado)
     if indice == -1:
         return
 
-    # Contar, ordenar e imprimir
     conteo = contar_categorias(filas, indice)
     lista = ordenar_de_mayor_a_menor(conteo)
     total = len(filas)
+
+    # Cambio: ahora esta consulta también queda en el historial
+    registrar_historial(f"agrupar por {encabezado[indice]}", len(lista))
 
     print("\nRegistros por", encabezado[indice], "(de mayor a menor):")
     for cantidad, categoria in lista:
@@ -215,9 +185,9 @@ def funcionalidad_opcional(ruta_archivo):
 # --- EL MENÚ INTERACTIVO ---
 
 def mostrar_menu():
-    print("="*50)
+    print("=" * 50)
     print("  PERSEUS DATA: PLATAFORMA DE PREDICCIÓN DE DESERCIÓN")
-    print("="*50)
+    print("=" * 50)
     print("1. Buscar un término específico")
     print("2. Ver estadísticas básicas (Máx, Mín, Promedio)")
     print("3. Agrupar por Categoría")
@@ -227,27 +197,32 @@ def mostrar_menu():
     opcion = input("Elige una opción (1-6): ")
     return opcion
 
+
 def main():
     archivo_actual = "estudiantes_50.csv"
     print(f"Iniciando sistema con el archivo: {archivo_actual}...")
-    
+
+    # Cambio: al iniciar se genera resultados/resumen.json (funcionalidad opcional)
+    if generar_resumen(archivo_actual) is not None:
+        print("Resumen del dataset guardado en resultados/resumen.json")
+
     while True:
         opcion = mostrar_menu()
-        
+
         if opcion == '1':
             print("\nTip: Intenta buscar términos como 'Enrolled'...")
             termino = input("Ingresa el término a buscar: ")
             cabecera, encontradas = cargar_y_buscar(archivo_actual, termino)
-            Guardar_buscar.ofrecer_guardar(cabecera, encontradas)
-            
-            # Registro silencioso de la búsqueda
             registrar_historial(termino, len(encontradas))
+            Guardar_buscar.ofrecer_guardar(cabecera, encontradas)
         elif opcion == '2':
             encabezados = obtener_encabezados(archivo_actual)
             indice = pedir_columna(encabezados)
             if indice != -1:
                 resultado = calcular_estadisticas(archivo_actual, indice)
                 if resultado is not None:
+                    # Cambio: también se registra en el historial
+                    registrar_historial(f"estadísticas de {encabezados[indice]}", 1)
                     Guardar_buscar.ofrecer_guardar(
                         ["Columna", "Maximo", "Minimo", "Promedio"],
                         [[encabezados[indice], resultado[0], resultado[1], resultado[2]]])
@@ -264,3 +239,7 @@ def main():
         else:
             print("Opción no válida. Ingresa un número del 1 al 6.")
 
+
+# Cambio: sin esto el programa nunca arrancaba
+if __name__ == "__main__":
+    main()
