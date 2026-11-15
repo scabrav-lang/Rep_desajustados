@@ -1,4 +1,4 @@
-# Perseus Data:Plataforma de Predicción de Deserción Universitaria
+# Perseus Data: Plataforma de Predicción de Deserción Universitaria
 
 ## Descripción del Proyecto
 Este proyecto analiza factores socioeconómicos y académicos que inciden en el rendimiento escolar y la tasa de retención estudiantil universitaria. A través de una herramienta interactiva en Python, exploramos patrones clave para responder a problemáticas de deserción.
